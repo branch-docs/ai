@@ -1,23 +1,29 @@
-
-
 # Branch AI & MCP Hub
 
-Welcome to Branch's official public repository for AI resources, developer context, and Model Context Protocol (MCP) assets. This repository serves as a foundational knowledge layer for LLMs, autonomous agents, and internal tooling interacting with the Branch ecosystem.
+This repository holds Branch's public AI resources: the address of our Model
+Context Protocol (MCP) server, and a set of reusable Claude skills that help AI
+assistants work with the Branch platform correctly.
+
+There are two separate things here, and they work in different ways. Read the
+section that matches what you're trying to do.
 
 ---
 
-## ⚡️ Live Cloud MCP Server
+## 1. The MCP Server (live tools)
 
-Branch provides a fully managed, live cloud MCP server hosted directly through our developer documentation framework. Unlike standard local MCP setups, there is zero software compilation, Node dependency installation, or background scripting required on your machine.
+Branch runs a managed cloud MCP server through our documentation platform. It
+exposes read-only tools for searching and reading the Branch API docs. There's
+nothing to install or run locally — no Node, no scripts, no compilation.
 
-* **Endpoint URL:** https://docs.branchapp.com/mcp
-* **Transport Protocol:** Server-Sent Events (SSE)
+- **Endpoint URL:** `https://docs.branchapp.com/mcp`
+- **Transport:** Server-Sent Events (SSE)
 
----
+### Connecting it
 
-## 🛠️ Claude Desktop Configuration
-
-To instantly connect your Claude Desktop client to the Branch live cloud server, add the following snippet to your configuration file (typically located at `~/.config/Claude/claude_desktop_config.json` on macOS or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
+In Claude (or another MCP-capable client), add a connector pointing at the
+endpoint above. For Claude Desktop specifically, add this to your config file
+(`~/.config/Claude/claude_desktop_config.json` on macOS, or
+`%APPDATA%\Claude\claude_desktop_config.json` on Windows), then restart:
 
 ```json
 {
@@ -28,21 +34,92 @@ To instantly connect your Claude Desktop client to the Branch live cloud server,
     }
   }
 }
-
 ```
 
-Once added, restart Claude Desktop. The agent will automatically discover our active documentation and discovery tools, allowing it to navigate, search, and parse Branch API paths dynamically.
+Once connected, the assistant can discover and use the server's documentation
+tools automatically. This is the one part that *is* automatic — once the
+connector is added, the tools show up on their own.
 
 ---
 
-## 🧠 Pre-Baked Agent Skills
+## 2. The Skills (manual install)
 
-Beyond raw API schemas, this repository maintains platform-agnostic behavioral frameworks to align AI models with specific corporate operational standards.
+The `/skills` directory contains Claude skills — packaged instructions that
+teach an assistant how to handle Branch integrations the right way (for example,
+keeping KYC data out of the partner app and following the standard onboarding
+and payout flow).
 
-Browse the `/skills` directory to explore copy-pasteable system prompts, persona blueprints, and compliance guardrails structured as individual `SKILL.md` directives:
+### Please read this first — skills do NOT load themselves
 
-* **branch-onboarding-expert**: Guardrails, references, and workflows tailored for optimizing Customer Service agent onboarding and platform navigation.
-* **branch-integration-audit**: Instructions for validating implementation patterns, API key enforcement, and developer compliance baselines.
+A skill in this repo will **not** be picked up by an AI assistant on its own.
+This is the most common point of confusion, so to be explicit:
 
-> **Note on Compatibility:** While formatted using markdown conventions optimal for Anthropic's Claude ecosystem, these directives are platform-agnostic and can be utilized across OpenAI Assistants, Microsoft Copilot Studio, or custom orchestration layers like LangChain.
+- An assistant will **not** discover these skills by browsing the repo.
+- Asking an assistant to "go to this repo and load the skills" will **not**
+  work — it can read the text of the files, but reading them is not the same as
+  installing them, and they won't persist or activate.
+- Connecting the MCP server (section 1) does **not** bring the skills along.
+  The connector carries the server's tools, not these skills. They are
+  unrelated mechanisms.
 
+To use a skill, a person has to install it into their own Claude. Here's how.
+
+### Installing a skill (individual)
+
+1. Go to the `/dist` folder and download the `.zip` for the skill you want
+   (see "What's in /dist" below).
+2. In Claude, open **Customize → Skills**.
+3. Add the skill by uploading the `.zip` file.
+
+A skill you add this way is private to your own account. (Code execution must be
+enabled in your Claude settings for skills to run.)
+
+### Making a skill available to everyone (organizations)
+
+If you want a skill available to your whole organization so individuals don't
+each have to install it, an **organization owner** provisions it once via
+**Organization settings → Skills**, using the same `.zip` from `/dist`. It then
+appears in everyone's skill list automatically. This is an internal admin action
+on your side — it isn't something this repo does or that a reader needs to set
+up themselves.
+
+---
+
+## What's in `/skills` vs `/dist`
+
+This repo keeps two copies of each skill, for two different purposes:
+
+- **`/skills`** — the **source**. These are the editable, human-readable files
+  (`SKILL.md` and any reference docs), kept in folders so they're easy to read,
+  review, and update in GitHub. This is where changes get made. Read these if
+  you want to see what a skill actually does, or contribute a change.
+
+- **`/dist`** — the **ready-to-install packages**. Each skill folder from
+  `/skills` is bundled into a single `.zip` file here. These are what you
+  download and upload into Claude. They contain exactly the same content as the
+  source folders, just packaged into one file so the upload works in a single
+  step (and so any reference files stay attached correctly). If you just want to
+  *use* a skill, `/dist` is the only folder you need.
+
+When a skill in `/skills` changes, its `.zip` in `/dist` is rebuilt to match.
+
+---
+
+## Available Skills
+
+- **branch-onboarding-expert** — the standard, correct path for Branch worker
+  onboarding and payouts. Steers integrations away from API endpoints that look
+  usable but mishandle sensitive data, and toward Branch's hosted onboarding.
+- **branch-integration-audit** — reviews existing Branch integration code and
+  produces a structured report flagging violations, warnings, and passing
+  checks.
+
+---
+
+## A note on compatibility
+
+These skills are written in the Markdown/`SKILL.md` format used by Claude. The
+underlying guidance (the correct integration path, what to avoid) is general and
+can inform work in other AI tools too, but the install steps above are specific
+to Claude. Other platforms have their own mechanisms for adding this kind of
+guidance.
