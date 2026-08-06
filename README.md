@@ -14,20 +14,20 @@ Branch runs a managed cloud-native MCP server directly through our core document
 Because this is hosted via the cloud, there is no local environment configuration required—no local runtime dependencies, Node modules, scripts, or manual compilation.
 
 * **Endpoint Gateway URL:** https://docs.branchapp.com/mcp
-* **Transport Mechanism:** Server-Sent Events (SSE)
+* **Transport Mechanism:** Streamable HTTP
 
 ### Integration & Configuration
 
 To expose Branch's documentation tools to an MCP-capable client (such as Claude Desktop), add the endpoint to your ecosystem configuration file. 
 
-For **Claude Desktop**, append the following block to your configuration schema (`~/.config/Claude/claude_desktop_config.json` on macOS, or `%APPDATA%\Claude\claude_desktop_config.json` on Windows) and restart the application:
+For **Claude Desktop**, append the following block to your configuration schema (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, or `%APPDATA%\Claude\claude_desktop_config.json` on Windows) and restart the application:
 
 ```json
 {
   "mcpServers": {
     "branch-docs": {
-      "type": "sse",
-      "url": "[https://docs.branchapp.com/mcp](https://docs.branchapp.com/mcp)"
+      "type": "http",
+      "url": "https://docs.branchapp.com/mcp"
     }
   }
 }
