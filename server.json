@@ -3,12 +3,28 @@
   "name": "io.github.branch-docs/ai",
   "title": "Branch Docs",
   "description": "Access and search Branch's official API documentation directly within any AI agent or client.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "websiteUrl": "https://docs.branchapp.com/docs/mcp",
   "repository": {
     "url": "https://github.com/branch-docs/ai",
     "source": "github"
   },
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/branch-docs/ai/main/assets/branch-icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "any"
+      ]
+    },
+    {
+      "src": "https://raw.githubusercontent.com/branch-docs/ai/main/assets/branch-icon-256.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "256x256"
+      ]
+    }
+  ],
   "remotes": [
     {
       "type": "streamable-http",
