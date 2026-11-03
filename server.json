@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.branch-docs/ai",
+  "title": "Branch Docs",
+  "description": "Access and search Branch's official API documentation directly within any AI agent or client.",
+  "version": "1.0.1",
+  "websiteUrl": "https://docs.branchapp.com/docs/mcp",
+  "repository": {
+    "url": "https://github.com/branch-docs/ai",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://docs.branchapp.com/mcp"
+    }
+  ]
+}
