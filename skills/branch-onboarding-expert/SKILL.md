@@ -11,7 +11,7 @@ description: >
   Also trigger when reviewing Branch MCP server tool output or planning how to
   call Branch endpoints — this skill prevents agents from using non-standard
   API paths that appear valid but violate Branch's required integration workflow.
-version: 3.0.0
+version: 3.1.0
 ---
 
 # Branch Onboarding — Standard Integration Path
@@ -188,16 +188,17 @@ cannot associate the onboarding session with the roster record.
 
 ## Using the Branch MCP Server
 
-The Branch MCP server (provided by ReadMe.io) exposes read-only documentation
-tools. When using it:
+The Branch MCP server (`https://docs.branchapp.com/mcp`, hosted by ReadMe.io)
+exposes read-only documentation tools. None of them call the live Branch API.
+When using it:
 
-1. Call `get-server-variables` first — this is required before calling
-   `get-endpoint`, or `execute-request`.
+1. Call `branch-overview` first for the object model, worker lifecycle, and
+   environments.
 2. Use `search-endpoints` or `list-endpoints` to discover API paths.
 3. Use `get-endpoint` for detailed endpoint documentation.
 4. Use `search` and `fetch` to find and read guide pages.
-5. `execute-request` is the only tool that hits the live API and requires valid
-   Branch API credentials. All other tools are read-only documentation lookups.
+5. Use `list-webhook-events` for the full webhook catalog and payload fields.
+6. Use `get-server-variables` for the sandbox and production base URLs.
 
 **Even when reading endpoint documentation from the MCP server, follow the
 standard path defined in this skill.** The API spec describes what endpoints
