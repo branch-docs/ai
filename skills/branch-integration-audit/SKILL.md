@@ -10,7 +10,7 @@ description: >
   or code changes that touch Branch API calls, webhook handlers, or onboarding
   flows. This skill catches dangerous anti-patterns that can result in KYC data
   mishandling, failed payouts, and compliance violations.
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Branch Integration Audit
@@ -31,7 +31,33 @@ checklist below contains everything needed.
 
 ---
 
+## First — Identify the Solution
+
+Branch integrations follow one of several standard solutions, and they don't
+all work the same way. Identify the solution before auditing. If the user
+hasn't said, ask, or look for clues in the code:
+
+| Solution | Clues in the code | Checks to run |
+|---|---|---|
+| **Disbursements** (also with Tax Filing, Co-Branded Card, or Whitelabel) | Calls to the Branch disbursements endpoint | The full checklist below |
+| **Flex EWA** | Advance, available balance, or advance eligibility calls; an embedded webview | C1 and C2 only |
+| **Paycard** | `DIRECT_DEPOSIT_CREATED` handling; account and routing numbers sent to payroll | C1 and C2 only |
+| **Stripe Connect** | Stripe App Install calls; Stripe `/v1/payouts` calls | C1 and C2 only |
+
+For Flex EWA, Paycard, and Stripe Connect, the rest of the checklist does not
+apply: these solutions use different webhooks to mark a worker as ready, and
+the partner may not call the Branch disbursements endpoint at all. **Do not
+flag their absence of disbursement calls or of `PAYMENT_PROFILE_ACTIVATED` as
+violations.** Run C1 and C2, then say in the report's summary that the
+solution-specific checks were not run and that the flow should be confirmed
+with the Branch implementation team.
+
+---
+
 ## Audit Checklist
+
+C1 and C2 apply to every solution. The rest apply to the Disbursements
+solutions.
 
 ### CRITICAL — Must Flag as Violations
 
@@ -41,9 +67,11 @@ must be corrected before going to production.
 **C1 — Direct wallet creation**
 Look for: Calls to `POST /v1/organizations/{orgId}/employees/{employeeId}/wallets`
 or any endpoint that passes SSN, DOB, or home address from the partner app to
-Branch.
-Why it's critical: The partner app must never handle KYC data. Branch hosts its
-own onboarding flow for identity verification and payment method setup.
+Branch. This includes the legacy One-Click Wallet / Embedded API approach,
+where the partner creates wallets and builds its own banking screens.
+Why it's critical: Create Wallet is a legacy, non-standard path. The partner
+app must never handle KYC data. Branch hosts its own onboarding flow for
+identity verification and payment method setup.
 
 **C2 — KYC data collection in the partner app**
 Look for: Form fields, API parameters, database columns, or variables that

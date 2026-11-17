@@ -119,11 +119,9 @@ Important sandbox behaviors:
 - Money does not actually move in sandbox
 - **Wallet payments**: Any values can be used for testing
 - **Direct payments**:
-  - Single disbursement limit: $0.25 max
-  - Daily limit: $10.00
-  - Branch Direct has a minimum fee automatically applied
-  - Test with disbursement amounts that are $0.25 or less after fee to avoid
-    failures
+  - Keep each test disbursement at $20.00 or less
+  - Branch Direct has a minimum fee automatically applied (set by contract)
+  - Use amounts above the minimum fee and at or below $20.00 (for example, $5.00)
   - Amounts under the minimum fee will generate errors
 
 ### Webhook Simulation
