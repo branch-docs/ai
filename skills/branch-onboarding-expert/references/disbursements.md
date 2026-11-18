@@ -11,7 +11,10 @@ This file covers the Disbursements family of Branch solutions:
 - **Disbursements with Whitelabel** — the same API path; the Branch app is
   branded for the partner during implementation. Branch still hosts onboarding.
 
-All of them share the steps below.
+All of them share the steps below. These are the standard steps. If the user
+has solution documentation from Branch, follow it wherever it differs, and
+don't rebuild existing code unless the user asks (see "Before You Start" in
+`SKILL.md`).
 
 ---
 

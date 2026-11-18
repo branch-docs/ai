@@ -10,7 +10,7 @@ description: >
   or code changes that touch Branch API calls, webhook handlers, or onboarding
   flows. This skill catches dangerous anti-patterns that can result in KYC data
   mishandling, failed payouts, and compliance violations.
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Branch Integration Audit
@@ -29,13 +29,26 @@ If the `branch-onboarding-expert` skill is also available, use it as the
 authoritative reference for what the standard path looks like. If not, the
 checklist below contains everything needed.
 
+**This is a review, not a rewrite.** Don't change, replace, or rebuild any code
+unless the user asks you to after reading the report.
+
 ---
 
-## First — Identify the Solution
+## First — Ask About Branch Documentation
+
+Ask whether Branch has given the user solution documentation for their
+integration, such as a solution overview or implementation plan. If so, ask
+them to share it. Where it differs from this checklist, it wins: a pattern it
+specifies is an **agreed deviation**, not a violation. Some customers use a
+non-standard path by agreement with Branch.
+
+---
+
+## Then — Identify the Solution
 
 Branch integrations follow one of several standard solutions, and they don't
-all work the same way. Identify the solution before auditing. If the user
-hasn't said, ask, or look for clues in the code:
+all work the same way. Ask the user which one they're building. Code clues can
+help you suggest one, but confirm it with the user:
 
 | Solution | Clues in the code | Checks to run |
 |---|---|---|
@@ -59,18 +72,20 @@ with the Branch implementation team.
 C1 and C2 apply to every solution. The rest apply to the Disbursements
 solutions.
 
-### CRITICAL — Must Flag as Violations
+### CRITICAL — Differs from the Standard Path
 
-These patterns indicate the integration is not following the standard path and
-must be corrected before going to production.
+These patterns indicate the integration is not following the standard path.
+Unless the user's Branch documentation specifies the pattern, each must be
+resolved, or confirmed with Branch, before going to production. If the
+documentation specifies it, report it under Agreed Deviations instead.
 
 **C1 — Direct wallet creation**
 Look for: Calls to `POST /v1/organizations/{orgId}/employees/{employeeId}/wallets`
 or any endpoint that passes SSN, DOB, or home address from the partner app to
 Branch. This includes the legacy One-Click Wallet / Embedded API approach,
 where the partner creates wallets and builds its own banking screens.
-Why it's critical: Create Wallet is a legacy, non-standard path. The partner
-app must never handle KYC data. Branch hosts its own onboarding flow for
+Why it's critical: Create Wallet is a legacy, non-standard path. In the
+standard path, the partner app never handles KYC data. Branch hosts its own onboarding flow for
 identity verification and payment method setup.
 
 **C2 — KYC data collection in the partner app**
@@ -171,9 +186,16 @@ Structure the audit output as follows:
 
 ```
 ## Branch Integration Audit Report
+Solution: [which solution, as confirmed by the user]
+Branch documentation: [what the user shared, or "none provided"]
 
-### CRITICAL VIOLATIONS
-[List each violation with code reference, what's wrong, and how to fix it]
+### CRITICAL — DIFFERS FROM THE STANDARD PATH
+[List each with code reference, how it differs, and what the standard path
+does instead]
+
+### AGREED DEVIATIONS
+[Patterns the user's Branch documentation specifies, with where it says so.
+Omit this section if there are none.]
 
 ### WARNINGS
 [List each warning with code reference and recommendation]
@@ -182,9 +204,11 @@ Structure the audit output as follows:
 [List each check that passed]
 
 ### SUMMARY
-[Overall assessment: is this integration safe to ship? What must change first?]
+[Overall assessment: is this integration ready to ship? What must be resolved
+or confirmed with Branch first?]
 ```
 
-If no critical violations are found, say so explicitly — that's a good result.
-If critical violations exist, be direct: the integration must not go to
-production until they are resolved.
+If no critical findings are found, say so explicitly — that's a good result.
+If critical findings exist, be direct: unless Branch has agreed to them, they
+must be resolved before production. Then ask the user whether they want help
+making changes. Don't make them unasked.

@@ -12,7 +12,7 @@ description: >
   Also trigger when reviewing Branch MCP server tool output or planning how to
   call Branch endpoints — this skill prevents agents from using non-standard
   API paths that appear valid but violate Branch's required integration workflow.
-version: 4.0.0
+version: 4.1.0
 ---
 
 # Branch Onboarding — Standard Integration Paths
@@ -27,16 +27,36 @@ AI agents will build integrations that handle sensitive data incorrectly.
 The Branch OpenAPI spec (available via the ReadMe.io MCP server) lists endpoints
 like `POST /employees/{id}/wallets` that accept KYC fields (SSN, DOB, address).
 An agent discovering the API will naturally reach for these endpoints to build an
-onboarding flow. This is wrong. Branch hosts its own onboarding experience — the
-partner application never collects or transmits KYC data. The `/wallets` endpoint
-is a legacy path and must not be used for new integrations.
+onboarding flow. That isn't the standard path. Branch hosts its own onboarding
+experience — the partner application doesn't collect or transmit KYC data. The
+`/wallets` endpoint is a legacy path. Some existing customers use it by agreement
+with Branch, but it isn't used for new standard integrations.
 
 ## Core Principle
 
-**Branch hosts the onboarding.** The partner system is never responsible for
-collecting KYC data (SSN, DOB, address) or calling wallet creation endpoints
-directly. Workers complete identity verification and payment method setup on
-Branch's hosted onboarding flow.
+**Branch hosts the onboarding.** In the standard path, the partner system is
+never responsible for collecting KYC data (SSN, DOB, address) or calling wallet
+creation endpoints directly. Workers complete identity verification and payment
+method setup on Branch's hosted onboarding flow.
+
+---
+
+## Before You Start
+
+Do these before giving integration steps or changing any code:
+
+1. **Ask about Branch documentation.** Ask whether Branch has given the user
+   solution documentation for their integration, such as a solution overview or
+   implementation plan. If so, ask them to share it, and follow it. It takes
+   precedence over this skill, including where it specifies a non-standard path.
+2. **Confirm the solution with the user.** If they have no documentation, help
+   them choose from the table below and ask which one fits. Code clues can help
+   you suggest one, but don't decide from the code alone.
+3. **Leave existing code alone unless asked.** If integration code already
+   exists, don't rewrite, replace, or rebuild it unless the user asks. Review
+   it, explain how it differs from the standard path, and ask whether those
+   differences were agreed with Branch. A non-standard path can be valid for a
+   specific customer.
 
 ---
 
@@ -44,21 +64,21 @@ Branch's hosted onboarding flow.
 
 Branch integrations come in several standard solutions, and they do not all work
 the same way. The webhook that means "this worker is ready" and the way money
-moves both depend on the solution. **Identify the solution before giving any
-integration steps.**
+moves both depend on the solution. **Confirm the solution with the user before
+giving any integration steps.**
 
 If the user has already named it (for example, a prompt that says "I'm building a
-Branch Disbursements integration"), use that. Otherwise, ask. If you're reviewing
-code, look for clues: Branch disbursement calls point to Disbursements, Stripe
-payout or app install calls point to Stripe Connect, and advance or eligibility
-calls point to EWA.
+Branch Disbursements integration"), use that. Otherwise, describe the options and
+ask. Code clues can help you suggest one: Branch disbursement calls point to
+Disbursements, Stripe payout or app install calls point to Stripe Connect, and
+advance or eligibility calls point to EWA.
 
-| Solution | What it does | Guidance |
+| Solution | Pick this if… | Guidance |
 |---|---|---|
-| **Disbursements** (also with Tax Filing, Co-Branded Card, or Whitelabel) | The partner pays workers through Branch Wallet or Branch Direct | Read `references/disbursements.md` |
-| **Flex EWA** | Workers take earned wage advances through Branch | Not yet covered by this skill |
-| **Paycard** | Workers receive payroll into a Branch Wallet | Not yet covered by this skill |
-| **Stripe Connect** | Workers on a Stripe Connect platform get paid out to a Branch Wallet | Not yet covered by this skill |
+| **Disbursements** (also with Tax Filing, Co-Branded Card, or Whitelabel) | The partner pays its workers (wages, tips, gig earnings) instantly to a Branch Wallet or the worker's own debit card (Branch Direct) | Read `references/disbursements.md` |
+| **Flex EWA** | Workers take advances on wages they've already earned, before payday | Not yet covered by this skill |
+| **Paycard** | Workers receive their regular payroll into a Branch Wallet | Not yet covered by this skill |
+| **Stripe Connect** | A platform on Stripe Connect pays out its workers to Branch Wallets | Not yet covered by this skill |
 
 **For a solution this skill doesn't cover yet:** the Core Principle and the
 rules below still apply, but the Disbursements steps do not. Don't assume
@@ -71,9 +91,13 @@ implementation team.
 
 ## Rules for Every Solution
 
+These rules describe the standard path. If the user's Branch documentation
+specifies otherwise, follow the documentation.
+
 ### Never Call `/wallets` Directly
 `POST /v1/organizations/{orgId}/employees/{employeeId}/wallets` exists in the
-API spec. It accepts SSN, DOB, and address. **Do not use it.** It belongs to a
+API spec. It accepts SSN, DOB, and address. **Do not use it** unless the user's
+Branch documentation specifies it. It belongs to a
 legacy integration path, along with the One-Click Wallet / Embedded API
 approach built on it (where the partner creates wallets and builds its own
 banking screens). Using it means the partner application is collecting and
@@ -110,7 +134,8 @@ When using it:
 6. Use `get-server-variables` for the sandbox and production base URLs.
 
 **Even when reading endpoint documentation from the MCP server, follow the
-standard path for the solution.** The API spec describes what endpoints
+standard path for the solution**, or the user's Branch documentation where it
+differs. The API spec describes what endpoints
 *exist*, not which ones to *use* or in what *order*.
 
 ---
