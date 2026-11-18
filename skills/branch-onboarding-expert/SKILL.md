@@ -12,7 +12,7 @@ description: >
   Also trigger when reviewing Branch MCP server tool output or planning how to
   call Branch endpoints — this skill prevents agents from using non-standard
   API paths that appear valid but violate Branch's required integration workflow.
-version: 4.1.0
+version: 4.1.1
 ---
 
 # Branch Onboarding — Standard Integration Paths
@@ -76,16 +76,25 @@ advance or eligibility calls point to EWA.
 | Solution | Pick this if… | Guidance |
 |---|---|---|
 | **Disbursements** (also with Tax Filing, Co-Branded Card, or Whitelabel) | The partner pays its workers (wages, tips, gig earnings) instantly to a Branch Wallet or the worker's own debit card (Branch Direct) | Read `references/disbursements.md` |
-| **Flex EWA** | Workers take advances on wages they've already earned, before payday | Not yet covered by this skill |
-| **Paycard** | Workers receive their regular payroll into a Branch Wallet | Not yet covered by this skill |
-| **Stripe Connect** | A platform on Stripe Connect pays out its workers to Branch Wallets | Not yet covered by this skill |
+| **Flex EWA** | Workers take advances on wages they've already earned, before payday | No standard path yet — see below |
+| **Paycard** | Workers receive their regular payroll into a Branch Wallet | No standard path yet — see below |
+| **Stripe Connect** | A platform on Stripe Connect pays out its workers to Branch Wallets | No standard path yet — see below |
 
-**For a solution this skill doesn't cover yet:** the Core Principle and the
-rules below still apply, but the Disbursements steps do not. Don't assume
-`PAYMENT_PROFILE_ACTIVATED` is the gate, and don't assume the partner calls the
-disbursement endpoint. Use the Branch MCP server to read the docs for that
-solution, and tell the user to confirm the flow with their Branch
-implementation team.
+**Flex EWA, Paycard, and Stripe Connect don't have a standard integration path
+yet.** Branch sets up the flow with each customer during implementation. For
+these solutions:
+
+- Work from the documentation the user's Branch team provided. If they don't
+  have it, tell them to ask their Branch implementation team for it, and don't
+  design the integration flow yourself.
+- Don't apply the Disbursements steps. Don't assume `PAYMENT_PROFILE_ACTIVATED`
+  is the gate, and don't assume the partner calls the disbursement endpoint.
+- Don't build the flow from the public guides, some of which describe older
+  models, and don't ask the user to choose setup options (such as how earned
+  wages are calculated) from them. Branch decides those with the customer.
+- Once the flow is known from their Branch documentation, use the Branch MCP
+  server to look up specific endpoints, fields, and webhooks.
+- The Core Principle and the rules below still apply.
 
 ---
 

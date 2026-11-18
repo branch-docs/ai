@@ -10,7 +10,7 @@ description: >
   or code changes that touch Branch API calls, webhook handlers, or onboarding
   flows. This skill catches dangerous anti-patterns that can result in KYC data
   mishandling, failed payouts, and compliance violations.
-version: 2.1.0
+version: 2.1.1
 ---
 
 # Branch Integration Audit
@@ -57,13 +57,16 @@ help you suggest one, but confirm it with the user:
 | **Paycard** | `DIRECT_DEPOSIT_CREATED` handling; account and routing numbers sent to payroll | C1 and C2 only |
 | **Stripe Connect** | Stripe App Install calls; Stripe `/v1/payouts` calls | C1 and C2 only |
 
-For Flex EWA, Paycard, and Stripe Connect, the rest of the checklist does not
-apply: these solutions use different webhooks to mark a worker as ready, and
-the partner may not call the Branch disbursements endpoint at all. **Do not
-flag their absence of disbursement calls or of `PAYMENT_PROFILE_ACTIVATED` as
-violations.** Run C1 and C2, then say in the report's summary that the
-solution-specific checks were not run and that the flow should be confirmed
-with the Branch implementation team.
+Only Disbursements has a standard path so far. Flex EWA, Paycard, and Stripe
+Connect don't have one yet; Branch sets up their flow with each customer. For
+them, the rest of the checklist does not apply: they may use a different
+webhook to mark a worker as ready, and the partner may not call the Branch
+disbursements endpoint at all. **Do not flag a missing disbursement call or
+`PAYMENT_PROFILE_ACTIVATED` handler as a violation, and don't judge their flow
+against the public guides.** Run C1 and C2. If the user shared their Branch
+documentation, review the code against it. Either way, say in the report's
+summary that no standard checklist exists for this solution yet and that the
+flow should be confirmed with the Branch implementation team.
 
 ---
 
