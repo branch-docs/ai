@@ -10,7 +10,7 @@ description: >
   or code changes that touch Branch API calls, webhook handlers, or onboarding
   flows. This skill catches dangerous anti-patterns that can result in KYC data
   mishandling, failed payouts, and compliance violations.
-version: 2.1.2
+version: 2.1.3
 ---
 
 # Branch Integration Audit
@@ -46,9 +46,10 @@ non-standard path by agreement with Branch.
 
 ## Then — Identify the Solution
 
-Branch integrations follow one of several standard solutions, and they don't
-all work the same way. Ask the user which one they're building. Code clues can
-help you suggest one, but confirm it with the user:
+Branch offers several solutions, and they don't all work the same way. Ask the
+user to describe what the integration does, or confirm what the code suggests.
+Don't show them a menu of Branch solutions. These code clues, for your
+reference, help you recognize each one:
 
 | Solution | Clues in the code | Checks to run |
 |---|---|---|

@@ -12,7 +12,7 @@ description: >
   Also trigger when reviewing Branch MCP server tool output or planning how to
   call Branch endpoints — this skill prevents agents from using non-standard
   API paths that appear valid but violate Branch's required integration workflow.
-version: 4.1.2
+version: 4.2.0
 ---
 
 # Branch Onboarding — Standard Integration Paths
@@ -49,9 +49,10 @@ Do these before giving integration steps or changing any code:
    solution documentation for their integration, such as a solution overview or
    implementation plan. If so, ask them to share it, and follow it. It takes
    precedence over this skill, including where it specifies a non-standard path.
-2. **Confirm the solution with the user.** If they have no documentation, help
-   them choose from the table below and ask which one fits. Code clues can help
-   you suggest one, but don't decide from the code alone.
+2. **Ask what they're building.** If they have no documentation, ask the user
+   to describe it in their own words: who gets paid, for what, and how. Don't
+   show them a menu of Branch solutions. Route them using their answer (see
+   Step 0). Code clues can help, but don't decide from the code alone.
 3. **Leave existing code alone unless asked.** If integration code already
    exists, don't rewrite, replace, or rebuild it unless the user asks. Review
    it, explain how it differs from the standard path, and ask whether those
@@ -68,23 +69,26 @@ moves both depend on the solution. **Confirm the solution with the user before
 giving any integration steps.**
 
 If the user has already named it (for example, a prompt that says "I'm building a
-Branch Disbursements integration"), use that. Otherwise, describe the options and
-ask. Code clues can help you suggest one: Branch disbursement calls point to
-Disbursements, Stripe payout or app install calls point to Stripe Connect, and
-advance or eligibility calls point to EWA.
+Branch Disbursements integration"), use that. Otherwise, route them from their
+own description, not from a list:
 
-| Solution | Pick this if… | Guidance |
-|---|---|---|
-| **Disbursements** (also with Tax Filing, Co-Branded Card, or Whitelabel) | The partner pays its workers (wages, tips, gig earnings) instantly to a Branch Wallet or the worker's own debit card (Branch Direct) | Read `references/disbursements.md` |
-| **Flex EWA** | Workers take advances on wages they've already earned, before payday | Branch-provided documentation — see below |
-| **Paycard** | Workers receive their regular payroll into a Branch Wallet | Branch-provided documentation — see below |
-| **Stripe Connect** | A platform on Stripe Connect pays out its workers to Branch Wallets | Branch-provided documentation — see below |
+- **If they describe paying their workers** (wages, tips, gig earnings)
+  **instantly to a Branch Wallet or the worker's own debit card**, that's
+  Disbursements. This includes Disbursements with Tax Filing (W-9 collection),
+  a Co-Branded Card, or Whitelabel (a Branch app branded for them). Confirm it
+  with the user in a sentence, then read `references/disbursements.md`.
+- **Otherwise, or if you can't tell,** tell them their Branch team provides the
+  integration documentation for their solution, and work from that
+  documentation.
 
-When you present these options to the user, describe what each solution does.
-Don't label which ones have guidance in this skill.
+For your reference only, not to present as a menu, Branch's other solutions
+include Flex EWA (workers take advances on wages they've already earned),
+Paycard (regular payroll into a Branch Wallet), and Stripe Connect (a platform on
+Stripe Connect pays out its workers to Branch Wallets). Code clues: Branch
+disbursement calls point to Disbursements, Stripe payout or app install calls
+point to Stripe Connect, and advance or eligibility calls point to EWA.
 
-**For Flex EWA, Paycard, and Stripe Connect, Branch provides the integration
-documentation to each customer during implementation.** For these solutions:
+**For these and any other solution besides Disbursements:**
 
 - Work from the documentation the user's Branch team provided. If they don't
   have it yet, tell them their Branch implementation team provides it. Keep
