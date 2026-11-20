@@ -1,0 +1,7 @@
+{
+  "name": "branch-integration",
+  "description": "Guides Branch partner integrations for worker onboarding and payouts: the Onboarding Expert and Integration Audit skills, plus the read-only Branch Docs MCP server (docs.branchapp.com/mcp) for Branch's API and guide documentation.",
+  "author": { "name": "Branch Product Documentation" },
+  "homepage": "https://docs.branchapp.com/docs/mcp",
+  "repository": "https://github.com/branch-docs/ai"
+}

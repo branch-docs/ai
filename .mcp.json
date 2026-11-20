@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "branch-docs": {
+      "type": "http",
+      "url": "https://docs.branchapp.com/mcp"
+    }
+  }
+}
